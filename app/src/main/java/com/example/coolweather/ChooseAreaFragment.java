@@ -2,13 +2,15 @@ package com.example.coolweather;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,15 +21,14 @@ import androidx.fragment.app.Fragment;
 
 import org.jetbrains.annotations.NotNull;
 import org.litepal.LitePal;
-import org.litepal.crud.LitePalSupport;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import db.City;
-import db.County;
-import db.Province;
+import com.example.coolweather.db.City;
+import com.example.coolweather.db.County;
+import com.example.coolweather.db.Province;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -40,7 +41,7 @@ public class ChooseAreaFragment extends Fragment {
     private static final int LEVEL_CITY = 1;
     private static final int LEVEL_COUNTY = 2;
     private TextView titletext;
-    private Button backbutton;
+    private ImageButton backbutton;
     private ListView listView;
     private ArrayAdapter<String> adapter;
     private List<String> datalist = new ArrayList();
@@ -126,9 +127,9 @@ public class ChooseAreaFragment extends Fragment {
             listView.setSelection(0);
             currentLevel = LEVEL_COUNTY;
         } else {
-            int provinceCode = selectedProvince.getProvinceCode();
-            int cityCode = selectedCity.getCityCode();
-            String address = "Http://guolin.tech/api/china/" + provinceCode + "/" + cityCode;
+            int provinceid = selectedProvince.getId();
+            int cityid = selectedCity.getId();
+            String address = "Http://guolin.tech/api/china/" + provinceid + "/" + cityid;
             queryFromServer(address, "county");
         }
     }
@@ -146,8 +147,8 @@ public class ChooseAreaFragment extends Fragment {
             listView.setSelection(0);
             currentLevel = LEVEL_CITY;
         } else {
-            int provinceCode = selectedProvince.getProvinceCode();
-            String address = "Http://guolin.tech/api/china/" + provinceCode;
+            int provinceId = selectedProvince.getId();
+            String address = "Http://guolin.tech/api/china/" + provinceId;
             queryFromServer(address, "city");
         }
     }
@@ -169,9 +170,11 @@ public class ChooseAreaFragment extends Fragment {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String responseText = response.body().string();
+                Log.d("TAG", "onResponse: "+responseText);
                 boolean result = false;
-                if ("provice".equals(type)) {
+                if ("province".equals(type)) {
                     result = Utility.handleProvinceResponse(responseText);
+                    Log.d("TAG", "onResponse: "+result);
                 } else if ("city".equals(type)) {
                     result = Utility.handleCityResponse(responseText, selectedProvince.getId());
                 } else if ("county".equals(type)) {

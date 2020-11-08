@@ -15,19 +15,20 @@
             android:textColor="#fff"
             android:textSize="20sp"
             android:layout_centerInParent="true"/>
-        <Button
+        <ImageButton
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:id="@+id/back_button"
             android:layout_marginLeft="10dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/ic_back"/>
+            android:background="@drawable/ic_back" />
 
     </RelativeLayout>
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/list_view"/>
+
 
 </LinearLayout>
